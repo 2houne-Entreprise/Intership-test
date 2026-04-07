@@ -27,6 +27,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Échéance</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pièce jointe</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -47,8 +48,15 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $task->deadline ? $task->deadline->format('d/m/Y') : 'N/A' }}
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if($task->attachment_path)
+                                    <a href="{{ asset('storage/' . $task->attachment_path) }}" target="_blank" class="text-blue-600 hover:text-blue-800">Voir</a>
+                                @else
+                                    Aucune
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <form action="{{ route('tasks.update-status', $task) }}" method="POST" class="inline">
+                                <form action="{{ route('tasks.update-status', $task) }}" method="POST" enctype="multipart/form-data" class="inline">
                                     @csrf
                                     @method('PATCH')
                                     <select name="status" onchange="this.form.submit()" class="border border-gray-300 rounded px-2 py-1">
@@ -56,6 +64,8 @@
                                         <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>En cours</option>
                                         <option value="done" {{ $task->status == 'done' ? 'selected' : '' }}>Terminé</option>
                                     </select>
+                                    <input type="file" name="attachment" class="ml-2 text-xs">
+                                    <button type="submit" class="ml-2 bg-blue-500 text-white px-2 py-1 rounded text-xs">Mettre à jour</button>
                                 </form>
                             </td>
                         </tr>

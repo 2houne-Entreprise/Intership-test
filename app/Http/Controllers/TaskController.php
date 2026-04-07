@@ -11,10 +11,18 @@ class TaskController extends Controller
     {
         $request->validate([
             'status' => 'required|in:pending,in_progress,done',
+            'attachment' => 'nullable|file|max:10240', // 10MB max
         ]);
 
-        $task->update(['status' => $request->status]);
+        $data = ['status' => $request->status];
 
-        return back()->with('success', 'Statut de la tâche mis à jour.');
+        if ($request->hasFile('attachment')) {
+            $path = $request->file('attachment')->store('attachments', 'public');
+            $data['attachment_path'] = $path;
+        }
+
+        $task->update($data);
+
+        return back()->with('success', 'Tâche mise à jour.');
     }
 }
