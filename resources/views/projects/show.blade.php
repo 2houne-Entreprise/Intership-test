@@ -36,7 +36,12 @@
             {{-- Section principale : Gestion des tâches --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    
+                      
+
+                    {{-- Messages avec le composant Alert --}}
+                        <x-alert type="success" :message="session('success')" />
+                        <x-alert type="error" :message="session('error')" />
+
                     {{-- En-tête de la section tâches --}}
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="font-semibold text-lg">Liste des tâches</h3>

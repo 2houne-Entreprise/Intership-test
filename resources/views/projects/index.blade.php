@@ -16,12 +16,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     
-                    {{-- Message de succès --}}
-                    @if(session('success'))
-                        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded" role="alert">
-                            <p>{{ session('success') }}</p>
-                        </div>
-                    @endif
+                  
+    
+                    {{-- Messages de succès et d'erreur avec le composant Alert --}}
+                    <x-alert type="success" :message="session('success')" />
+                    <x-alert type="error" :message="session('error')" />
 
                     {{-- Liste des projets --}}
                     @forelse($projects as $project)

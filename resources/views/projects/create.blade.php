@@ -9,7 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-
+                    <x-alert type="success" :message="session('success')" />
+                    <x-alert type="error" :message="session('error')" />
                     <form action="{{ route('projects.store') }}" method="POST" class="space-y-6">
                         @csrf
 

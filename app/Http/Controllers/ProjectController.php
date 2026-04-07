@@ -19,18 +19,7 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
-        auth()->user()->projects()->create($request->only('name', 'description'));
-
-        return redirect()->route('projects.index')
-            ->with('success', 'Projet créé avec succès.');
-    }
+    
 
     public function show(Project $project)
     {
@@ -45,27 +34,58 @@ class ProjectController extends Controller
         return view('projects.edit', compact('project'));
     }
 
-    public function update(Request $request, Project $project)
-    {
-        Gate::authorize('update', $project);
+    
 
+    
+    public function store(Request $request)
+    {
+    try {
         $request->validate([
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        $project->update($request->only('name', 'description'));
+        auth()->user()->projects()->create($request->only('name', 'description'));
 
         return redirect()->route('projects.index')
-            ->with('success', 'Projet mis à jour.');
+            ->with('success', ' Projet créé avec succès.');
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', ' Erreur lors de la création du projet.');
+    }
+    }
+
+    public function update(Request $request, Project $project)
+    {
+        try {
+            Gate::authorize('update', $project);
+
+            $request->validate([
+                'name'        => 'required|string|max:255',
+                'description' => 'nullable|string',
+            ]);
+
+            $project->update($request->only('name', 'description'));
+
+            return redirect()->route('projects.index')
+                ->with('success', ' Projet mis à jour avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', ' Erreur lors de la mise à jour.');
+        }
     }
 
     public function destroy(Project $project)
     {
-        Gate::authorize('delete', $project);
-        $project->delete();
+        try {
+            Gate::authorize('delete', $project);
+            $project->delete();
 
-        return redirect()->route('projects.index')
-            ->with('success', 'Projet supprimé.');
+            return redirect()->route('projects.index')
+                ->with('success', ' Projet supprimé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression.');
+        }
     }
-}
+    }
