@@ -11,26 +11,41 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function index() {
-    $projects = auth()->user()->projects()->with('tasks')->get();
-    return view('projects.index', compact('projects'));
-}
+    public function edit(Request $request): View
+    {
+        return view('profile.edit', [
+            'user' => $request->user(),
+        ]);
+    }
 
-public function store(Request $request) {
-    $request->validate(['name'=>'required|max:255']);
-    auth()->user()->projects()->create($request->all());
-    return back();
-}
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
 
-public function update(Request $request, Project $project) {
-    $this->authorize('update', $project);
-    $project->update($request->all());
-    return back();
-}
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
 
-public function destroy(Project $project) {
-    $this->authorize('delete', $project);
-    $project->delete();
-    return back();
-}
+        $request->user()->save();
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
+    }
 }
