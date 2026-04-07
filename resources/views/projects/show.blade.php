@@ -179,7 +179,7 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             @if($task->attachment_path)
-                                                <a href="{{ Storage::url($task->attachment_path) }}" target="_blank" class="text-blue-600 hover:underline">📎</a>
+                                                <a href="{{ asset('storage/' . $task->attachment_path) }}" target="_blank" class="text-blue-600 hover:underline">📎</a>
                                             @else
                                                 -
                                             @endif

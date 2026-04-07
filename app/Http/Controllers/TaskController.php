@@ -12,25 +12,27 @@ use Illuminate\Support\Facades\Gate;
 class TaskController extends Controller
 {
     public function store(StoreTaskRequest $request, Project $project)
-    {
-        // Vérifier que l'utilisateur est propriétaire du projet
-        Gate::authorize('update', $project);
-        
-        $data = $request->validated();
-        $data['project_id'] = $project->id;
+{
+    if (Gate::denies('update', $project)) {
+        abort(403);
+    }
+    
+    $data = $request->validated();
+    $data['project_id'] = $project->id;
 
-        // Gérer l'upload du fichier
-        if ($request->hasFile('attachment')) {
-            $path = $request->file('attachment')->store('attachments', 'public');
-            $data['attachment_path'] = $path;
-        }
-
-        Task::create($data);
-
-        return redirect()->route('projects.show', $project)
-            ->with('success', ' Tâche créée avec succès.');
+  
+    if ($request->hasFile('attachment')) {
+        $file = $request->file('attachment');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('attachments', $filename, 'public');
+        $data['attachment_path'] = $path;
     }
 
+    Task::create($data);
+
+    return redirect()->route('projects.show', $project)
+        ->with('success', '✅ Tâche créée avec succès.');
+}
     public function update(UpdateTaskRequest $request, Task $task)
     {
         // Vérifier que l'utilisateur est propriétaire du projet de la tâche
