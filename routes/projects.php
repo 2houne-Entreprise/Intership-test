@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->prefix('projects')->group(function () {
@@ -11,4 +12,11 @@ Route::middleware('auth')->prefix('projects')->group(function () {
     Route::get('/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+     // Routes pour les tâches 
+    Route::post('/{project}/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+
 });

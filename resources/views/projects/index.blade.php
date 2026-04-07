@@ -5,9 +5,9 @@
                 {{ __('Mes Projets') }}
             </h2>
             <a href="{{ route('projects.create') }}" 
-               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                + Nouveau Projet
-            </a>
+             class="bg-white hover:bg-gray-100 text-blue-600 font-bold py-2 px-4 rounded-lg shadow-md transition duration-200 border border-blue-200">
+                    + Nouveau Projet
+             </a>
         </div>
     </x-slot>
 
@@ -42,7 +42,7 @@
                                 <div class="flex space-x-3 ml-4">
                                     <a href="{{ route('projects.edit', $project) }}" 
                                        class="text-amber-600 hover:text-amber-800 font-medium">
-                                        ✏️ Modifier
+                                         Modifier
                                     </a>
                                     <form action="{{ route('projects.destroy', $project) }}" 
                                           method="POST" class="inline-block"
@@ -51,7 +51,7 @@
                                         @method('DELETE')
                                         <button type="submit" 
                                                 class="text-red-600 hover:text-red-800 font-medium">
-                                            🗑️ Supprimer
+                                             Supprimer
                                         </button>
                                     </form>
                                 </div>
