@@ -8,9 +8,22 @@ use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
+    /**
+     * Afficher la liste des projets avec le nombre de tâches
+     * Utilisation de Eager Loading pour éviter N+1
+     */
     public function index()
     {
-        $projects = auth()->user()->projects()->latest()->get();
+        // Eager loading: charger les tâches et compter uniquement
+        $projects = auth()->user()
+                        ->projects()
+                        ->withCount(['tasks', 'tasks as overdue_count' => function($query) {
+                            $query->where('deadline', '<', now())
+                                  ->where('status', '!=', 'done');
+                        }])
+                        ->latest()
+                        ->get();
+        
         return view('projects.index', compact('projects'));
     }
 
@@ -21,11 +34,35 @@ class ProjectController extends Controller
 
     
 
+     /**
+     * Afficher un projet avec ses tâches
+     * Utilisation de Eager Loading pour éviter N+1
+     */
     public function show(Project $project)
     {
         Gate::authorize('view', $project);
-        $project->load('tasks');
-        return view('projects.show', compact('project'));
+        
+        // Eager loading: charger les tâches avec leurs relations
+        $project->load([
+            'tasks' => function($query) {
+                $query->orderBy('deadline', 'asc')
+                      ->orderBy('created_at', 'desc');
+            }
+        ]);
+        
+        // Récupérer les tâches en retard séparément
+        $overdueTasks = $project->tasks()->overdue()->get();
+        
+        // Statistiques des tâches
+        $stats = [
+            'total' => $project->tasks->count(),
+            'pending' => $project->tasks->where('status', 'pending')->count(),
+            'in_progress' => $project->tasks->where('status', 'in_progress')->count(),
+            'done' => $project->tasks->where('status', 'done')->count(),
+            'overdue' => $overdueTasks->count(),
+        ];
+        
+        return view('projects.show', compact('project', 'stats', 'overdueTasks'));
     }
 
     public function edit(Project $project)
