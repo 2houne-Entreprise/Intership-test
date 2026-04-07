@@ -7,11 +7,15 @@ use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
     public function store(StoreTaskRequest $request, Project $project)
     {
+        // Vérifier que l'utilisateur est propriétaire du projet
+        Gate::authorize('update', $project);
+        
         $data = $request->validated();
         $data['project_id'] = $project->id;
 
@@ -24,15 +28,17 @@ class TaskController extends Controller
         Task::create($data);
 
         return redirect()->route('projects.show', $project)
-            ->with('success', 'Tâche créée avec succès.');
+            ->with('success', ' Tâche créée avec succès.');
     }
 
     public function update(UpdateTaskRequest $request, Task $task)
     {
+        // Vérifier que l'utilisateur est propriétaire du projet de la tâche
+        Gate::authorize('update', $task->project);
+        
         $data = $request->validated();
         $task->update($data);
 
-        // Si la requête vient du formulaire de changement de statut rapide
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['success' => true, 'status' => $task->status]);
         }
@@ -43,6 +49,9 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        // Vérifier que l'utilisateur est propriétaire du projet de la tâche
+        Gate::authorize('delete', $task->project);
+        
         // Supprimer le fichier attaché s'il existe
         if ($task->attachment_path) {
             Storage::disk('public')->delete($task->attachment_path);
@@ -51,6 +60,6 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect()->back()
-            ->with('success', 'Tâche supprimée.');
+            ->with('success', ' Tâche supprimée.');
     }
 }
