@@ -1,23 +1,32 @@
-
+<?php
 
 namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 class Task extends Model
 {
-    protected $fillable = ['title','status','deadline','project_id','attachment_path'];
+    use HasFactory;
 
-    public function project() { return $this->belongsTo(Project::class); }
+    protected $fillable = ['title', 'status', 'deadline', 'project_id', 'attachment_path'];
 
-    // Accessor US6
-    public function getStatusLabelAttribute() {
-        return match($this->status){
-            'pending'=>'En attente',
-            'in_progress'=>'En cours',
-            'done'=>'Terminé',
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function getStatusLabelAttribute()
+    {
+        return match ($this->status) {
+            'pending' => 'En attente',
+            'in_progress' => 'En cours',
+            'done' => 'Terminé',
         };
     }
 
-    // Scope US6
-    public function scopeOverdue($query){
-        return $query->where('deadline','<',now())->where('status','!=','done');
+    public function scopeOverdue($query)
+    {
+        return $query->where('deadline', '<', now())->where('status', '!=', 'done');
     }
 }

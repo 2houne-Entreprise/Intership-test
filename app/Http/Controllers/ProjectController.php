@@ -30,7 +30,18 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $project = Project::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->route('projects.show', $project);
     }
 
     /**
