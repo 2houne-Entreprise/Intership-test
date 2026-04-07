@@ -12,7 +12,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+        $projects = Project::where('user_id', auth()->id())->with('tasks')->get();
+
+        return view('projects.index', compact('projects'));
     }
 
     /**

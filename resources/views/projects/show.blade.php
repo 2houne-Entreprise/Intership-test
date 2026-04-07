@@ -32,9 +32,14 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($project->tasks as $task)
-                        <tr>
+                        <tr class="{{ $task->deadline && $task->deadline->isPast() && $task->status !== 'done' ? 'bg-red-50' : '' }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {{ $task->title }}
+                                @if($task->deadline && $task->deadline->isPast() && $task->status !== 'done')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 ml-2">
+                                        En retard
+                                    </span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $task->status_label }}
