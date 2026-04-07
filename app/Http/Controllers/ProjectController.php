@@ -8,22 +8,9 @@ use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
-    /**
-     * Afficher la liste des projets avec le nombre de tâches
-     * Utilisation de Eager Loading pour éviter N+1
-     */
     public function index()
     {
-        // Eager loading: charger les tâches et compter uniquement
-        $projects = auth()->user()
-                        ->projects()
-                        ->withCount(['tasks', 'tasks as overdue_count' => function($query) {
-                            $query->where('deadline', '<', now())
-                                  ->where('status', '!=', 'done');
-                        }])
-                        ->latest()
-                        ->get();
-        
+        $projects = auth()->user()->projects()->latest()->get();
         return view('projects.index', compact('projects'));
     }
 
@@ -32,37 +19,37 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
-    
+    public function store(Request $request)
+    {
+        // ✅ Validation avec messages personnalisés
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ], [
+            'name.required' => 'Le nom du projet est obligatoire.',
+            'name.max' => 'Le nom du projet ne doit pas dépasser 255 caractères.',
+        ]);
 
-     /**
-     * Afficher un projet avec ses tâches
-     * Utilisation de Eager Loading pour éviter N+1
-     */
+        auth()->user()->projects()->create($validated);
+
+        return redirect()->route('projects.index')
+            ->with('success', '✅ Projet créé avec succès.');
+    }
+
     public function show(Project $project)
     {
         Gate::authorize('view', $project);
+        $project->load('tasks');
         
-        // Eager loading: charger les tâches avec leurs relations
-        $project->load([
-            'tasks' => function($query) {
-                $query->orderBy('deadline', 'asc')
-                      ->orderBy('created_at', 'desc');
-            }
-        ]);
-        
-        // Récupérer les tâches en retard séparément
-        $overdueTasks = $project->tasks()->overdue()->get();
-        
-        // Statistiques des tâches
         $stats = [
             'total' => $project->tasks->count(),
             'pending' => $project->tasks->where('status', 'pending')->count(),
             'in_progress' => $project->tasks->where('status', 'in_progress')->count(),
             'done' => $project->tasks->where('status', 'done')->count(),
-            'overdue' => $overdueTasks->count(),
+            'overdue' => $project->tasks()->overdue()->count(),
         ];
         
-        return view('projects.show', compact('project', 'stats', 'overdueTasks'));
+        return view('projects.show', compact('project', 'stats'));
     }
 
     public function edit(Project $project)
@@ -71,58 +58,30 @@ class ProjectController extends Controller
         return view('projects.edit', compact('project'));
     }
 
-    
-
-    
-    public function store(Request $request)
-    {
-    try {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
-        auth()->user()->projects()->create($request->only('name', 'description'));
-
-        return redirect()->route('projects.index')
-            ->with('success', ' Projet créé avec succès.');
-    } catch (\Exception $e) {
-        return redirect()->back()
-            ->with('error', ' Erreur lors de la création du projet.');
-    }
-    }
-
     public function update(Request $request, Project $project)
     {
-        try {
-            Gate::authorize('update', $project);
+        Gate::authorize('update', $project);
 
-            $request->validate([
-                'name'        => 'required|string|max:255',
-                'description' => 'nullable|string',
-            ]);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ], [
+            'name.required' => 'Le nom du projet est obligatoire.',
+            'name.max' => 'Le nom du projet ne doit pas dépasser 255 caractères.',
+        ]);
 
-            $project->update($request->only('name', 'description'));
+        $project->update($validated);
 
-            return redirect()->route('projects.index')
-                ->with('success', ' Projet mis à jour avec succès.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', ' Erreur lors de la mise à jour.');
-        }
+        return redirect()->route('projects.index')
+            ->with('success', '✅ Projet mis à jour avec succès.');
     }
 
     public function destroy(Project $project)
     {
-        try {
-            Gate::authorize('delete', $project);
-            $project->delete();
+        Gate::authorize('delete', $project);
+        $project->delete();
 
-            return redirect()->route('projects.index')
-                ->with('success', ' Projet supprimé avec succès.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Erreur lors de la suppression.');
-        }
+        return redirect()->route('projects.index')
+            ->with('success', '✅ Projet supprimé avec succès.');
     }
-    }
+}
