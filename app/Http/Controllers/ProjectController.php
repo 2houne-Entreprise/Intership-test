@@ -8,11 +8,11 @@ use App\Models\Project;
 class ProjectController extends Controller
 {
     public function index()
-    {
-        $projects = Project::where('user_id', auth()->id())->get();
+{
+    $projects = Project::with('tasks')->where('user_id', auth()->id())->get();
 
-        return view('projects.index', compact('projects'));
-    }
+    return view('projects.index', compact('projects'));
+}
 
     public function create()
     {
@@ -41,7 +41,7 @@ class ProjectController extends Controller
         abort(403);
     }
 
-    // IMPORTANT: load tasks
+   
     $project->load('tasks');
 
     return view('projects.show', compact('project'));

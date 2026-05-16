@@ -17,4 +17,21 @@ class Task extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+     public function scopeOverdue($query)
+    {
+        return $query->whereNotNull('deadline')
+                     ->where('deadline', '<', Carbon::today());
+    }
+
+        public function getStatusLabelAttribute()
+    {
+        return match($this->status) {
+            'pending' => 'En attente',
+            'in_progress' => 'En cours',
+            'done' => 'Terminé',
+            default => $this->status,
+        };
+    }
+   
 }
