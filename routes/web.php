@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProjectController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,4 +25,6 @@ Route::post('/logout', function () {
     return redirect('/login');
 
 })->middleware('auth')->name('logout');
+
+require __DIR__.'/projects.php';
 
