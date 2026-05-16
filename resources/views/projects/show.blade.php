@@ -22,7 +22,7 @@
     </div>
 @endif
 
-<form method="POST" action="{{ route('tasks.store', $project) }}">
+<form method="POST" action="{{ route('tasks.store', $project) }}" enctype="multipart/form-data">
     @csrf
     <input type="text" name="title" placeholder="Title" value="{{ old('title') }}">
     
@@ -33,7 +33,8 @@
     </select>
 
     <input type="date" name="deadline" value="{{ old('deadline') }}">
-
+    
+    <input type="file" name="attachment">
     <button type="submit">Add Task</button>
 </form>
 
@@ -46,25 +47,30 @@
         <th>Title</th>
         <th>Status</th>
         <th>Deadline</th>
+        <th>Attachment</th> 
     </tr>
 
-   @foreach($project->tasks as $task)
-    <tr @if($task->deadline && \Carbon\Carbon::parse($task->deadline)->isPast()) style="background-color:#fdd;" @endif>
-        <td>{{ $task->title }}</td>
-        <td>
-            <form method="POST" action="{{ route('tasks.update', $task) }}">
-                @csrf
-                @method('PUT')
-                <select name="status" onchange="this.form.submit()">
-                    <option value="pending" {{ $task->status == 'pending' ? 'selected' : '' }}>En attente</option>
-                    <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>En cours</option>
-                    <option value="done" {{ $task->status == 'done' ? 'selected' : '' }}>Terminée</option>
-                </select>
-            </form>
-        </td>
-        <td>{{ $task->deadline ?? 'No deadline' }}</td>
-    </tr>
-@endforeach
+    @foreach($project->tasks as $task)
+        <tr @if($task->deadline && \Carbon\Carbon::parse($task->deadline)->isPast()) style="background-color:#fdd;" @endif>
+            <td>{{ $task->title }}</td>
+            <td>
+                <form method="POST" action="{{ route('tasks.update', $task) }}">
+                    @csrf
+                    @method('PUT')
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="pending" {{ $task->status == 'pending' ? 'selected' : '' }}>En attente</option>
+                        <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>En cours</option>
+                        <option value="done" {{ $task->status == 'done' ? 'selected' : '' }}>Terminée</option>
+                    </select>
+                </form>
+            </td>
+            <td>{{ $task->deadline ?? 'No deadline' }}</td>
+            <td>
+                {{-- Simple message when attachment exists --}}
+                {{ $task->attachment_path ? 'You uploaded a file' : '-' }}
+            </td>
+        </tr>
+    @endforeach
 </table>
 
 <a href="{{ route('projects.index') }}">⬅ Back to Projects</a>

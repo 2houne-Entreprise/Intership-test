@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->enum('status', ['pending', 'in_progress', 'done'])->default('pending');
             $table->date('deadline')->nullable();
+            $table->string('attachment_path')->nullable()->after('deadline');
             $table->timestamps();
         });
     }
