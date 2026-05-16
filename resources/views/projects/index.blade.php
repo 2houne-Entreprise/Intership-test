@@ -11,7 +11,7 @@
         </a>
 
         <br><br>
-
+a
         {{-- EDIT --}}
         <a href="{{ route('projects.edit', $project) }}">
             ✏️ Edit

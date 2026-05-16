@@ -1,13 +1,6 @@
-<form method="POST" action="/login">
+<form method="POST" action="{{ route('login.store') }}">
     @csrf
-
-    <input type="email" name="email" />
-    <input type="password" name="password" />
-    
-    @error('password')
-        {{ $message }}<
-    @enderror
-
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
     <button type="submit">Login</button>
-
 </form>

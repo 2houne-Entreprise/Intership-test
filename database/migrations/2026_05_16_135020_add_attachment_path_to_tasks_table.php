@@ -10,21 +10,21 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::table('tasks', function (Blueprint $table) {
-            Schema::table('tasks', function (Blueprint $table) {
-        $table->string('attachment_path')->nullable()->after('deadline');
+{
+    Schema::table('tasks', function (Blueprint $table) {
+        if (!Schema::hasColumn('tasks', 'attachment_path')) {
+            $table->string('attachment_path')->nullable()->after('deadline');
+        }
     });
-        });
-    }
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {
-        Schema::table('tasks', function (Blueprint $table) {
-            //
-        });
-    }
+{
+    Schema::table('tasks', function (Blueprint $table) {
+        $table->dropColumn('attachment_path');
+    });
+}
 };
