@@ -27,4 +27,5 @@ Route::post('/logout', function () {
 })->middleware('auth')->name('logout');
 
 require __DIR__.'/projects.php';
+require __DIR__.'/tasks.php';
 
