@@ -16,20 +16,28 @@ class ProjectController extends Controller
 
     public function index()
     {
-        $projects = auth()->user()->projects()->latest()->get();
+        $projects = auth()->user()
+            ->projects()
+            ->with('tasks')
+            ->latest()
+            ->get();
 
         return view('projects.index', compact('projects'));
     }
 
-    public function show(Project $project)
+        public function show(Project $project)
     {
         $this->authorizeProject($project);
 
         $project->load('tasks');
 
-        return view('projects.show', compact('project'));
-    }
+       
 
+        return view('projects.show', compact(
+            'project',
+            
+        ));
+    }
     public function store(Request $request)
     {
         $request->validate([

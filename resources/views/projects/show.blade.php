@@ -60,8 +60,12 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Date Limite') }}
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                         {{ __('Statut') }}
+                                    </th>
+
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        {{ __('Libellé') }}
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Actions') }}
@@ -93,15 +97,22 @@
                                                 </select>
                                             </form>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <form method="POST" action="{{ route('tasks.destroy', $task) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette tâche ?')" class="inline-block">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">
-                                                    {{ __('Supprimer') }}
-                                                </button>
-                                            </form>
-                                        </td>
+                                                                            <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="text-sm text-gray-700">
+                                            {{ $task->status_label }}
+                                        </span>
+                                    </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <form method="POST" action="{{ route('tasks.destroy', $task) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette tâche ?')" class="inline-block">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="text-red-600 hover:text-red-900">
+                                                {{ __('Supprimer') }}
+                                            </button>
+                                        </form>
+                                    </td>
                                     </tr>
                                 @endforeach
                             </tbody>
