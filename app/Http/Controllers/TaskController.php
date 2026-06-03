@@ -18,6 +18,15 @@ class TaskController extends Controller
             abort(403);
         }
     }
+    public function create(Project $project)
+    {
+        if ($project->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('tasks.create', compact('project'));
+    }
+
     public function store(StoreTaskRequest $request, Project $project)
     {
             if ($project->user_id !== auth()->id()) {
@@ -29,7 +38,7 @@ class TaskController extends Controller
             'deadline' => $request->deadline,
         ]);
 
-        return back();
+        return redirect()->route('projects.show', $project);
     }
 
     public function update(UpdateTaskRequest $request, Task $task)

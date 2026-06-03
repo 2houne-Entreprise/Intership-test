@@ -21,6 +21,15 @@ class ProjectController extends Controller
         return view('projects.index', compact('projects'));
     }
 
+    public function show(Project $project)
+    {
+        $this->authorizeProject($project);
+
+        $project->load('tasks');
+
+        return view('projects.show', compact('project'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([

@@ -22,10 +22,17 @@
                         @foreach($projects as $project)
                             <div class="p-6 bg-gray-50 rounded-lg border border-gray-200 flex flex-col justify-between shadow-sm">
                                 <div>
-                                    <h4 class="text-xl font-bold text-gray-800 mb-2">{{ $project->name }}</h4>
+                                    <h4 class="text-xl font-bold text-gray-800 mb-2">
+                                        <a href="{{ route('projects.show', $project) }}" class="text-indigo-650 hover:text-indigo-900 hover:underline">
+                                            {{ $project->name }}
+                                        </a>
+                                    </h4>
                                     <p class="text-gray-600 mb-4">{{ $project->description ?? __('Aucune description fournie.') }}</p>
                                 </div>
                                 <div class="flex space-x-3 items-center mt-4">
+                                    <a href="{{ route('projects.show', $project) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                        {{ __('Voir') }}
+                                    </a>
                                     <a href="{{ route('projects.edit', $project) }}" class="inline-flex items-center px-3 py-1.5 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                         {{ __('Modifier') }}
                                     </a>
