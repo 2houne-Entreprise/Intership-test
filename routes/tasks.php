@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'own.project'])->group(function () {
+
     Route::get('/projects/{project}/tasks/create', [TaskController::class, 'create'])
         ->name('tasks.create');
 

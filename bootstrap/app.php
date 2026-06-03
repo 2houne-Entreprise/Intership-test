@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        $middleware->alias([
+            'own.project' => \App\Http\Middleware\EnsureUserOwnsProject::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
