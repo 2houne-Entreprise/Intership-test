@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTaskRequest extends FormRequest
@@ -18,6 +17,7 @@ class UpdateTaskRequest extends FormRequest
             'title' => 'required|max:255',
             'status' => 'required|in:pending,in_progress,done',
             'deadline' => 'nullable|date',
+            'attachment' => 'nullable|file|max:2048',
         ];
     }
 }

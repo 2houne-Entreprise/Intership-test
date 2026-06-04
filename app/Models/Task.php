@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Project;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
@@ -13,6 +12,7 @@ class Task extends Model
         'title',
         'status',
         'deadline',
+        'attachment_path',
     ];
 
     public function project()
