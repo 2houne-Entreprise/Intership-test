@@ -13,7 +13,7 @@
 
             @forelse ($projects as $project)
                 <article class="p-6 bg-white rounded-lg shadow-sm space-y-4">
-                    <h3 class="font-semibold text-lg text-gray-900">{{ $project->name }}</h3>
+                    <h3 class="font-semibold text-lg text-gray-900"><a href="{{ route('projects.show', $project) }}" class="underline">{{ $project->name }}</a></h3>
                     <p class="text-gray-600 whitespace-pre-line break-words">{{ $project->description }}</p>
                     <div class="flex flex-wrap items-center gap-4">
                         <a href="{{ route('projects.edit', $project) }}" class="underline text-gray-800">Modifier</a>

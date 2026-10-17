@@ -23,6 +23,16 @@ class ProjectController extends Controller
         return view('projects.form', ['project' => new Project]);
     }
 
+    public function show(Project $project): View
+    {
+        Gate::authorize('view', $project);
+
+        return view('projects.show', [
+            'project' => $project,
+            'tasks' => $project->tasks()->latest('id')->paginate(10),
+        ]);
+    }
+
     public function store(ProjectRequest $request): RedirectResponse
     {
         $request->user()->projects()->create($request->validated());
