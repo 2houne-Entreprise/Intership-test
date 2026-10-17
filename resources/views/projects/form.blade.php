@@ -1,7 +1,9 @@
-<x-app-layout>
-    <x-slot name="header">
+@extends('layouts.app')
+    @section('header')
         <h2 class="font-semibold text-xl text-gray-800">{{ $project->exists ? 'Modifier le projet' : 'Créer un projet' }}</h2>
-    </x-slot>
+    @endsection
+
+@section('content')
 
     <div class="py-12">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,4 +32,4 @@
             </form>
         </div>
     </div>
-</x-app-layout>
+@endsection

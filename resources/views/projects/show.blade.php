@@ -1,13 +1,12 @@
-<x-app-layout>
-    <x-slot name="header">
+@extends('layouts.app')
+    @section('header')
         <h2 class="font-semibold text-xl text-gray-800">{{ $project->name }}</h2>
-    </x-slot>
+    @endsection
+
+@section('content')
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            @if (session('status'))
-                <p role="status" class="p-4 bg-white rounded-lg text-green-700">{{ session('status') }}</p>
-            @endif
 
             <p class="text-gray-600 whitespace-pre-line break-words">{{ $project->description }}</p>
             <div class="flex flex-wrap gap-4">
@@ -30,7 +29,19 @@
                         @forelse ($tasks as $task)
                             <tr class="border-b border-gray-200">
                                 <td class="p-4 break-words">{{ $task->title }}</td>
-                                <td class="p-4">{{ $task->status }}</td>
+                                <td class="p-4">
+                                    <form method="POST" action="{{ route('projects.tasks.status', [$project, $task]) }}" class="flex flex-wrap items-center gap-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <label for="status-{{ $task->id }}" class="sr-only">Statut de {{ $task->title }}</label>
+                                        <select id="status-{{ $task->id }}" name="status" required class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                            <option value="pending" @selected($task->status === 'pending')>En attente</option>
+                                            <option value="in_progress" @selected($task->status === 'in_progress')>En cours</option>
+                                            <option value="done" @selected($task->status === 'done')>Terminée</option>
+                                        </select>
+                                        <x-primary-button>Mettre à jour</x-primary-button>
+                                    </form>
+                                </td>
                                 <td class="p-4">{{ $task->deadline?->format('d/m/Y') ?? '—' }}</td>
                                 <td class="p-4">
                                     <div class="flex items-center gap-4">
@@ -53,4 +64,4 @@
             {{ $tasks->links() }}
         </div>
     </div>
-</x-app-layout>
+@endsection

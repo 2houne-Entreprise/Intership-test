@@ -1,13 +1,12 @@
-<x-app-layout>
-    <x-slot name="header">
+@extends('layouts.app')
+    @section('header')
         <h2 class="font-semibold text-xl text-gray-800">Mes projets</h2>
-    </x-slot>
+    @endsection
+
+@section('content')
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            @if (session('status'))
-                <p role="status" class="p-4 bg-white rounded-lg text-green-700">{{ session('status') }}</p>
-            @endif
 
             <a href="{{ route('projects.create') }}" class="inline-block underline text-gray-800">Créer un projet</a>
 
@@ -31,4 +30,4 @@
             {{ $projects->links() }}
         </div>
     </div>
-</x-app-layout>
+@endsection
