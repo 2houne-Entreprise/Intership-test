@@ -14,7 +14,7 @@ class ProjectController extends Controller
     public function index(Request $request): View
     {
         return view('projects.index', [
-            'projects' => $request->user()->projects()->latest('id')->paginate(10),
+            'projects' => $request->user()->projects()->with('tasks')->latest('id')->paginate(10),
         ]);
     }
 
@@ -23,13 +23,20 @@ class ProjectController extends Controller
         return view('projects.form', ['project' => new Project]);
     }
 
-    public function show(Project $project): View
+    public function show(Request $request, Project $project): View
     {
         Gate::authorize('view', $project);
 
+        $tasks = $project->tasks();
+
+        if ($request->boolean('overdue')) {
+            $tasks->overdue();
+        }
+
         return view('projects.show', [
             'project' => $project,
-            'tasks' => $project->tasks()->latest('id')->paginate(10),
+            'tasks' => $tasks->latest('id')->paginate(10)->withQueryString(),
+            'overdueOnly' => $request->boolean('overdue'),
         ]);
     }
 

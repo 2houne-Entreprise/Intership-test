@@ -22,9 +22,9 @@
                 <div>
                     <x-input-label for="status" value="Statut" />
                     <select id="status" name="status" required class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="pending" @selected(old('status', $task->status ?? 'pending') === 'pending')>En attente</option>
-                        <option value="in_progress" @selected(old('status', $task->status) === 'in_progress')>En cours</option>
-                        <option value="done" @selected(old('status', $task->status) === 'done')>Terminée</option>
+                        @foreach (\App\Models\Task::STATUS_LABELS as $status => $label)
+                            <option value="{{ $status }}" @selected(old('status', $task->status ?? 'pending') === $status)>{{ $label }}</option>
+                        @endforeach
                     </select>
                     <x-input-error :messages="$errors->get('status')" class="mt-2" />
                 </div>

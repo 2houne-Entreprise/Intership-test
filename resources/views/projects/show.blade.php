@@ -14,6 +14,17 @@
                 <a href="{{ route('projects.tasks.create', $project) }}" class="underline text-gray-800">Ajouter une tâche</a>
             </div>
 
+            <form method="GET" action="{{ route('projects.show', $project) }}" class="flex flex-wrap items-center gap-4">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="overdue" value="1" @checked($overdueOnly) class="rounded border-gray-300 text-indigo-600">
+                    Tâches en retard uniquement
+                </label>
+                <x-primary-button>Filtrer</x-primary-button>
+                @if ($overdueOnly)
+                    <a href="{{ route('projects.show', $project) }}" class="underline">Toutes les tâches</a>
+                @endif
+            </form>
+
             <div class="overflow-x-auto bg-white rounded-lg shadow-sm">
                 <table class="w-full text-left">
                     <caption class="p-4 font-semibold text-left">Tâches du projet</caption>
@@ -30,14 +41,15 @@
                             <tr class="border-b border-gray-200">
                                 <td class="p-4 break-words">{{ $task->title }}</td>
                                 <td class="p-4">
+                                    <p class="mb-2">{{ $task->status_label }}</p>
                                     <form method="POST" action="{{ route('projects.tasks.status', [$project, $task]) }}" class="flex flex-wrap items-center gap-2">
                                         @csrf
                                         @method('PATCH')
                                         <label for="status-{{ $task->id }}" class="sr-only">Statut de {{ $task->title }}</label>
                                         <select id="status-{{ $task->id }}" name="status" required class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                            <option value="pending" @selected($task->status === 'pending')>En attente</option>
-                                            <option value="in_progress" @selected($task->status === 'in_progress')>En cours</option>
-                                            <option value="done" @selected($task->status === 'done')>Terminée</option>
+                                            @foreach (\App\Models\Task::STATUS_LABELS as $status => $label)
+                                                <option value="{{ $status }}" @selected($task->status === $status)>{{ $label }}</option>
+                                            @endforeach
                                         </select>
                                         <x-primary-button>Mettre à jour</x-primary-button>
                                     </form>
@@ -55,7 +67,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" class="p-4 text-gray-600">Aucune tâche pour ce projet.</td></tr>
+                            <tr><td colspan="4" class="p-4 text-gray-600">{{ $overdueOnly ? 'Aucune tâche en retard.' : 'Aucune tâche pour ce projet.' }}</td></tr>
                         @endforelse
                     </tbody>
                 </table>
