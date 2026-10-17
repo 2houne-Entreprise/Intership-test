@@ -8,7 +8,9 @@ use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Throwable;
 
 class TaskController extends Controller
 {
@@ -21,7 +23,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request, Project $project): RedirectResponse
     {
-        $project->tasks()->create($request->validated());
+        $this->saveTask($request, $project->tasks()->make());
 
         return to_route('projects.show', $project)->with('status', 'Tâche créée.');
     }
@@ -35,7 +37,7 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, Project $project, Task $task): RedirectResponse
     {
-        $task->update($request->validated());
+        $this->saveTask($request, $task);
 
         return to_route('projects.show', $project)->with('status', 'Tâche modifiée.');
     }
@@ -45,6 +47,37 @@ class TaskController extends Controller
         Gate::authorize('update', $project);
         $task->delete();
 
+        if ($task->attachment_path) {
+            Storage::disk('public')->delete($task->attachment_path);
+        }
+
         return to_route('projects.show', $project)->with('status', 'Tâche supprimée.');
+    }
+
+    private function saveTask(StoreTaskRequest $request, Task $task): void
+    {
+        $oldPath = $task->attachment_path;
+        $newPath = null;
+        $task->fill($request->safe()->except('attachment'));
+
+        if ($request->hasFile('attachment')) {
+            $newPath = Storage::disk('public')->putFile('attachments', $request->file('attachment'));
+            abort_if($newPath === false, 500, 'Impossible de stocker la pièce jointe.');
+            $task->attachment_path = $newPath;
+        }
+
+        try {
+            $task->save();
+        } catch (Throwable $exception) {
+            if ($newPath) {
+                Storage::disk('public')->delete($newPath);
+            }
+
+            throw $exception;
+        }
+
+        if ($newPath && $oldPath) {
+            Storage::disk('public')->delete($oldPath);
+        }
     }
 }

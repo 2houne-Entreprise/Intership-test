@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-            <form method="POST" action="{{ $task->exists ? route('projects.tasks.update', [$project, $task]) : route('projects.tasks.store', $project) }}" class="p-6 bg-white rounded-lg shadow-sm space-y-6">
+            <form method="POST" enctype="multipart/form-data" action="{{ $task->exists ? route('projects.tasks.update', [$project, $task]) : route('projects.tasks.store', $project) }}" class="p-6 bg-white rounded-lg shadow-sm space-y-6">
                 @csrf
                 @if ($task->exists)
                     @method('PUT')
@@ -33,6 +33,18 @@
                     <x-input-label for="deadline" value="Échéance (facultative)" />
                     <x-text-input id="deadline" name="deadline" type="date" class="block w-full mt-1" :value="old('deadline', $task->deadline?->format('Y-m-d'))" />
                     <x-input-error :messages="$errors->get('deadline')" class="mt-2" />
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div>
+                        <x-input-label for="attachment" value="Pièce jointe (facultative)" />
+                        <input id="attachment" name="attachment" type="file" accept=".pdf,.txt,.jpg,.jpeg,.png" aria-describedby="attachment-help" class="block w-full mt-1">
+                        <p id="attachment-help" class="text-sm text-gray-600">PDF, texte, JPG ou PNG — 5 Mo maximum. Un nouveau fichier remplace la pièce jointe actuelle.</p>
+                        <x-input-error :messages="$errors->get('attachment')" class="mt-2" />
+                        @if ($task->attachment_path)
+                            <a href="{{ route('projects.tasks.attachment', [$project, $task]) }}" class="underline">Télécharger la pièce jointe actuelle</a>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-4">

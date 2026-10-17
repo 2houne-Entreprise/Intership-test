@@ -58,6 +58,9 @@
                                 <td class="p-4">
                                     <div class="flex items-center gap-4">
                                         <a href="{{ route('projects.tasks.edit', [$project, $task]) }}" class="underline">Modifier</a>
+                                        @if ($task->attachment_path)
+                                            <a href="{{ route('projects.tasks.attachment', [$project, $task]) }}" class="underline">Pièce jointe</a>
+                                        @endif
                                         <form method="POST" action="{{ route('projects.tasks.destroy', [$project, $task]) }}" onsubmit="return confirm('Supprimer cette tâche ?')">
                                             @csrf
                                             @method('DELETE')
