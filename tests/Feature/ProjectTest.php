@@ -12,7 +12,7 @@ it('redirects guests from project routes', function (string $method, string $pat
     ['get', '/projects/1/edit'],
     ['put', '/projects/1'],
     ['delete', '/projects/1'],
-]);
+])->group('us8');
 
 it('lists only the authenticated users projects', function () {
     $user = User::factory()->create();
@@ -42,10 +42,16 @@ it('creates a project for the authenticated user despite a forged owner', functi
     ])->assertRedirect(route('projects.index'))->assertSessionHas('status');
 
     $project = $user->projects()->sole();
+    $this->assertDatabaseHas('projects', [
+        'id' => $project->id,
+        'user_id' => $user->id,
+        'name' => 'TaskFlow',
+        'description' => 'Mon projet',
+    ]);
     expect($project->name)->toBe('TaskFlow')
         ->and($project->description)->toBe('Mon projet')
         ->and($project->user->is($user))->toBeTrue();
-});
+})->group('us8');
 
 it('allows an optional project description', function () {
     $user = User::factory()->create();

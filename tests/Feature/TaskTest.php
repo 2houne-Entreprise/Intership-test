@@ -61,8 +61,12 @@ it('validates task creation and updates and preserves input', function (string $
     $this->actingAs($project->user)->from($formUrl)->{$method}($targetUrl, $input)
         ->assertRedirect($formUrl)->assertSessionHasErrors($field);
 
+    $errorMessage = session('errors')->first($field);
+    $formResponse = $this->withCookie(config('session.cookie'), session()->getId())
+        ->get($formUrl)->assertSuccessful()->assertSeeText($errorMessage);
+
     if ($field !== 'title') {
-        $this->get($formUrl)->assertSuccessful()->assertSee('Titre conservé');
+        $formResponse->assertSee('Titre conservé');
     }
 
     $this->assertDatabaseCount('tasks', 1);
@@ -73,7 +77,7 @@ it('validates task creation and updates and preserves input', function (string $
     'missing status' => ['status', null],
     'unknown status' => ['status', 'cancelled'],
     'invalid date' => ['deadline', 'not-a-date'],
-])->with([false, true]);
+])->with([false, true])->group('us8');
 
 it('updates a task and clears its deadline without changing its project', function () {
     $task = Task::factory()->create(['deadline' => '2026-12-01']);
