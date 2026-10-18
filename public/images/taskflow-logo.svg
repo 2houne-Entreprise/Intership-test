@@ -1,0 +1,37 @@
+<svg width="912" height="224" viewBox="0 0 912 224" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="taskflow-logo-title">
+  <title id="taskflow-logo-title">TaskFlow</title>
+  <defs>
+    <linearGradient id="taskflowArrow" x1="15" y1="190" x2="239" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17BCA4"/>
+      <stop offset="1" stop-color="#0D9F91"/>
+    </linearGradient>
+    <linearGradient id="taskflowCard" x1="184" y1="5" x2="231" y2="137" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#079D83"/>
+      <stop offset="1" stop-color="#087E73"/>
+    </linearGradient>
+    <linearGradient id="taskflowWordmark" x1="625" y1="65" x2="912" y2="149" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10B99F"/>
+      <stop offset="1" stop-color="#0C9D8B"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M2 68C2 61 7 56 14 55L47 49C56 47 64 53 64 62V155C64 171 53 181 37 181C18 181 2 168 2 151V68Z" fill="#EEF1F3"/>
+  <path d="M75 49C75 39 82 32 92 30L124 24C135 22 143 30 143 41V160C143 174 132 181 117 181C93 181 75 166 75 148V49Z" fill="#A1E7DF"/>
+  <path d="M149 25C149 15 156 7 167 5L202 0C215 -2 226 7 226 20V144C226 161 215 171 199 171C171 171 149 154 149 132V25Z" fill="url(#taskflowCard)"/>
+
+  <circle cx="34" cy="96" r="12" fill="#A0A9AE"/>
+  <rect x="15" y="119" width="39" height="7" rx="3.5" transform="rotate(12 15 119)" fill="#87939A"/>
+  <rect x="15" y="137" width="35" height="7" rx="3.5" transform="rotate(12 15 137)" fill="#87939A"/>
+  <circle cx="108" cy="73" r="13" fill="#058D7B"/>
+  <rect x="89" y="96" width="42" height="8" rx="4" transform="rotate(-11 89 96)" fill="#13AD9B"/>
+  <rect x="91" y="115" width="37" height="8" rx="4" transform="rotate(-11 91 115)" fill="#13AD9B"/>
+  <path d="M174 49L190 64L215 33" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="164" y="78" width="45" height="8" rx="4" transform="rotate(-11 164 78)" fill="#DDF7F2"/>
+  <rect x="165" y="99" width="42" height="8" rx="4" transform="rotate(-11 165 99)" fill="#DDF7F2"/>
+
+  <path d="M1 171C18 187 41 191 64 181C99 165 126 130 168 118C187 112 204 109 221 111V95L241 116L211 146V132C192 132 176 135 161 141C126 155 103 183 70 202C42 218 14 215 2 197C-3 189 -2 178 1 171Z" fill="url(#taskflowArrow)"/>
+  <path d="M288 0V224" stroke="#D1D5D8" stroke-width="2"/>
+
+  <text x="334" y="155" textLength="282" lengthAdjust="spacingAndGlyphs" font-family="Figtree, Arial, Helvetica, sans-serif" font-size="145" font-weight="800" letter-spacing="-5" fill="#111D2E">Task</text>
+  <text x="622" y="155" textLength="284" lengthAdjust="spacingAndGlyphs" font-family="Figtree, Arial, Helvetica, sans-serif" font-size="145" font-weight="800" letter-spacing="-5" fill="url(#taskflowWordmark)">Flow</text>
+</svg>
